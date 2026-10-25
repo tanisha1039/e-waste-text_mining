@@ -152,23 +152,37 @@ st.sidebar.markdown("---")
 st.sidebar.markdown("#### 📂 Dataset Source")
 dataset_source = st.sidebar.radio(
     "Choose data source:",
-    ["Sample Demonstration Dataset", "Upload Custom CSV"],
+    [
+        "Recent 2025–2026 Dataset (India Policy Focus)",
+        "Baseline 2024 Demonstration Dataset",
+        "Upload Custom CSV"
+    ],
     index=0,
-    help="Select the curated demonstration dataset (India e-waste focus) or upload your own CSV file."
+    help="Select the recent 2025-2026 dataset, baseline dataset, or upload your own CSV file."
 )
 
 raw_df = None
 stats_dict = None
 is_demo = False
 
-if dataset_source == "Sample Demonstration Dataset":
+if dataset_source == "Recent 2025–2026 Dataset (India Policy Focus)":
+    is_demo = True
+    dataset_path = os.path.join(os.path.dirname(__file__), "data", "recent_posts_2025_2026.csv")
+    if os.path.exists(dataset_path):
+        try:
+            raw_df, stats_dict = load_dataset(dataset_path, is_demonstration=True)
+        except Exception as e:
+            st.sidebar.error(f"Error reading 2025-2026 dataset: {e}")
+    else:
+        st.sidebar.error("Dataset file not found at data/recent_posts_2025_2026.csv")
+elif dataset_source == "Baseline 2024 Demonstration Dataset":
     is_demo = True
     sample_path = os.path.join(os.path.dirname(__file__), "data", "sample_posts.csv")
     if os.path.exists(sample_path):
         try:
             raw_df, stats_dict = load_dataset(sample_path, is_demonstration=True)
         except Exception as e:
-            st.sidebar.error(f"Error reading sample dataset: {e}")
+            st.sidebar.error(f"Error reading baseline dataset: {e}")
     else:
         st.sidebar.error("Sample dataset file not found at data/sample_posts.csv")
 else:
